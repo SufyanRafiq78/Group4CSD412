@@ -1,4 +1,7 @@
+require("dotenv").config();
+
 const axios = require("axios");
+
 
 const sheltersController = {
   getNearby: async (req, res) => {
