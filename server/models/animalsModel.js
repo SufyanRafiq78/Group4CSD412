@@ -2,21 +2,18 @@
 const db = require("../db");
 
 const Animals = {
-  // Get all pets (he had this)
   getAll: async () => {
     const result = await db.query("SELECT * FROM pets ORDER BY id");
     return result.rows;
   },
 
-  // Get pet by ID (NEW - you need this)
   getById: async (id) => {
     const result = await db.query("SELECT * FROM pets WHERE id = $1", [id]);
     return result.rows[0];
   },
 
-  // Search with filters (UPDATED - more comprehensive than his)
   search: async ({ species, type, age, gender, breed, shelter_id, status }) => {
-    // Support both 'species' and 'type' (for compatibility)
+   
     const speciesFilter = species || type;
     
     const result = await db.query(
@@ -33,13 +30,12 @@ const Animals = {
     return result.rows;
   },
 
-  // Create new pet (UPDATED - more fields than his)
   create: async (petData) => {
     const { 
       shelter_id, 
       name, 
       species, 
-      type,  // Support both species and type
+      type,  
       breed, 
       age, 
       gender, 
@@ -48,15 +44,14 @@ const Animals = {
       photos, 
       status 
     } = petData;
-    
-    // Use species if provided, otherwise use type
+
     const speciesValue = species || type;
     
     const result = await db.query(
       `INSERT INTO pets (shelter_id, name, species, breed, age, gender, size, description, photos, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
       [
-        shelter_id || 1,  // Default to shelter 1 if not provided
+        shelter_id || 1, 
         name, 
         speciesValue, 
         breed || 'Unknown', 
@@ -71,7 +66,6 @@ const Animals = {
     return result.rows[0];
   },
 
-  // Update pet (NEW - you need this for CRUD)
   update: async (id, petData) => {
     const { 
       name, 
@@ -106,7 +100,6 @@ const Animals = {
     return result.rows[0];
   },
 
-  // Delete pet (NEW - you need this for CRUD)
   delete: async (id) => {
     const result = await db.query(
       "DELETE FROM pets WHERE id = $1 RETURNING *", 
@@ -115,7 +108,6 @@ const Animals = {
     return result.rows[0];
   },
 
-  // Get pets by shelter (NEW - useful feature)
   getByShelter: async (shelter_id) => {
     const result = await db.query(
       "SELECT * FROM pets WHERE shelter_id = $1 ORDER BY id", 
