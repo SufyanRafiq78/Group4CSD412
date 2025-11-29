@@ -1,7 +1,14 @@
 // server/database/init.js
-const fs = require('fs');
 const path = require('path');
+
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
+const fs = require('fs');
 const db = require('../db');
+
+console.log('Environment variables loaded:');
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_HOST:', process.env.DB_HOST);
 
 async function initializeDatabase() {
     try {
@@ -26,13 +33,13 @@ async function initializeDatabase() {
 }
 
 async function insertSampleData() {
-    // Insert shelters from data.js
-    const { shelters, pets } = require('../models/data');
+  
+    const { shelters, pets } = require(path.join(__dirname, '../models/data'));
     
     console.log('Inserting shelters...');
     for (const shelter of shelters) {
         await db.query(
-            'INSERT INTO shelters (id, name, location) VALUES ($1, $2, $3)',
+            'INSERT INTO shelters (id, name, location) VALUES ($1, $2, $3) ON CONFLICT (id) DO NOTHING',
             [shelter.id, shelter.name, shelter.location]
         );
     }
@@ -41,7 +48,7 @@ async function insertSampleData() {
     for (const pet of pets) {
         await db.query(
             `INSERT INTO pets (id, shelter_id, name, species, breed, age, gender, description) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (id) DO NOTHING`,
             [pet.id, pet.shelter_id, pet.name, pet.species, pet.breed, pet.age, pet.gender, pet.description]
         );
     }
