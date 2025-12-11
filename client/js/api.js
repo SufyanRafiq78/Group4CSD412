@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = 'http://localhost:5050';
+const API_BASE_URL = 'http://ec2-3-238-180-196.compute-1.amazonaws.com';
 
 // API helper functions
 const api = {
