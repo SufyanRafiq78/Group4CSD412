@@ -1,21 +1,27 @@
 const { Pool } = require("pg");
 
-require("dotenv").config()
+require("dotenv").config();
 
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD, 
-  port: process.env.DB_PORT
-})
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT || 5432,
+
+  // ✅ REQUIRED FOR AWS RDS
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 pool.on("connect", () => {
-    console.log("Connected to Postgres");
-  });
-  
-  pool.on("error", (err) => {
-    console.error("DB error:", err);
-  });
-  
-  module.exports = pool;
+  console.log("✅ Connected to Postgres");
+});
+
+pool.on("error", (err) => {
+  console.error("❌ DB error:", err);
+});
+
+module.exports = pool;
+

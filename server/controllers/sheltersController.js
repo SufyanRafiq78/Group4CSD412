@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 const axios = require("axios");
-const Shelters = require("../models/sheltersModel");
+//const Shelters = require("../models/sheltersModel");
 
 const sheltersController = {
   // Get all shelters from database
